@@ -50,7 +50,12 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    # check if there are any three consecutive X's or O's in a row
+    for i in range(3):
+        if board[i][0] == board[i][1] == board[i][2] and board[i][0] is not None:
+            return True
+
+    return False
 
 
 def utility(board):
