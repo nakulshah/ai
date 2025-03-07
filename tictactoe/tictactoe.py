@@ -22,7 +22,21 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    # count the number of X's and O's on the board
+    num_X = 0
+    num_O = 0
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == X:
+                num_X += 1
+            elif board[i][j] == O:
+                num_O += 1
+
+    # if there are more X's than O's, then it is O's turn
+    if num_X > num_O:
+        return O
+    else:
+        return X
 
 
 def actions(board):
@@ -36,7 +50,9 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    # mark the action on the board
+    board[action[0]][action[1]] = player(board)
+    return board
 
 
 def winner(board):
