@@ -23,7 +23,7 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    print("player")
+    # print("player")
     # count the number of X's and O's on the board
     num_X = 0
     num_O = 0
@@ -45,7 +45,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    print("actions")
+    # print("actions")
     # find all the empty cells on the board, these are the available actions
     empty_cells = []
     for i in range(3):
@@ -59,11 +59,19 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    print("result")
+    # print("result")
     # mark the action on the board
     board[action[0]][action[1]] = player(board)
     return board
 
+def revert_action(board, action):
+    """
+    Returns the board that results from reverting the move (i, j) on the board.
+    """
+    # print("revert_action")
+    # un-mark the action on the board
+    board[action[0]][action[1]] = EMPTY
+    return board
 
 def winner(board):
     """
@@ -106,7 +114,7 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    print("utility")
+    # print("utility")
     # if X has won, return 1, else if O has won, return -1, else return 0
     if winner(board) == X:
         return 1
@@ -122,22 +130,66 @@ def minimax(board):
     """
     print("minimax")
     best_action = None
+    #return the best action for the current player using minimax algorithm
     if player(board) == X:
         v = -math.inf
         for action in actions(board):
-            board[action[0]][action[1]] = X
-            max_v = utility(board)
-            board[action[0]][action[1]] = EMPTY
-            if max_v > v:
-                v = max_v
+            # create new board with the action
+            new_board = result(board, action)
+            revert_action(board, action)
+
+            # check if utility is 1, then return the action
+            if utility(new_board) == 1:
+                return action
+
+            min_val = min_value(new_board)
+            if min_val > v:
+                v = min_val
                 best_action = action
     else:
         v = math.inf
         for action in actions(board):
-            board[action[0]][action[1]] = O
-            min_v = utility(board)
-            board[action[0]][action[1]] = EMPTY
-            if min_v < v:
-                v = min_v
+            #create new board with the action
+            new_board = result(board, action)
+            revert_action(board, action)
+
+            # check if utility is -1, then return the action
+            if utility(new_board) == -1:
+                return action
+
+            min_val = max_value(new_board)
+            if min_val < v:
+                v = min_val
                 best_action = action
+
+
+
     return best_action
+
+def max_value(board):
+    """
+    Returns the max value of the board.
+    """
+    # print("max_value")
+    #return the max value of the board
+    if terminal(board):
+        return utility(board)
+    v = -math.inf
+    for action in actions(board):
+        v = max(v, min_value(result(board, action)))
+        revert_action(board, action)
+    return v
+
+def min_value(board):
+    """
+    Returns the min value of the board.
+    """
+    # print("min_value")
+    #return the min value of the board
+    if terminal(board):
+        return utility(board)
+    v = math.inf
+    for action in actions(board):
+        v = min(v, max_value(result(board, action)))
+        revert_action(board, action)
+    return v
