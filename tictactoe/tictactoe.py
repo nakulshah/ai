@@ -69,7 +69,7 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    print("winner")
+    # print("winner")
     return end_game(board)[1]
 
 
@@ -78,7 +78,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    print("terminal")
+    # print("terminal")
     # check if there are any three consecutive X's or O's in a row
     return end_game(board)[0]
 
@@ -86,7 +86,7 @@ def end_game(board):
     """
     Returns True if game is over and also returns the winner, False and Empty otherwise.
     """
-    print("end_game")
+    # print("end_game")
     # check if there are any three consecutive X's or O's in a row
     for i in range(3):
         if board[i][0] == board[i][1] == board[i][2] and board[i][0] is not None:
