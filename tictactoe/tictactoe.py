@@ -1,7 +1,7 @@
 """
 Tic Tac Toe Player
 """
-
+import copy
 import math
 
 X = "X"
@@ -100,6 +100,11 @@ def end_game(board):
         if board[i][0] == board[i][1] == board[i][2] and board[i][0] is not None:
             return True, board[i][0]
 
+    # check if there are any three consecutive X's or O's in a column
+    for i in range(3):
+        if board[0][i] == board[1][i] == board[2][i] and board[0][i] is not None:
+            return True, board[0][i]
+
     # check if there are any three consecutive X's or O's in diagonal
     if board[0][0] == board[1][1] == board[2][2] and board[0][0] is not None:
         return True, board[0][0]
@@ -107,6 +112,10 @@ def end_game(board):
     # check if there are any three consecutive X's or O's in other diagonal
     if board[0][2] == board[1][1] == board[2][0] and board[0][2] is not None:
         return True, board[0][2]
+
+    # check if all the cells are filled
+    if all(all(cell is not EMPTY for cell in row) for row in board):
+        return True, None
 
     return False, EMPTY
 
@@ -135,22 +144,22 @@ def minimax(board):
         v = -math.inf
         for action in actions(board):
             # create new board with the action
-            new_board = result(board, action)
+            new_board = copy.deepcopy(result(board, action))
             revert_action(board, action)
 
             # check if utility is 1, then return the action
             if utility(new_board) == 1:
                 return action
 
-            min_val = min_value(new_board)
-            if min_val > v:
-                v = min_val
+            max_val = min_value(new_board)
+            if max_val > v:
+                v = max_val
                 best_action = action
     else:
         v = math.inf
         for action in actions(board):
             #create new board with the action
-            new_board = result(board, action)
+            new_board = copy.deepcopy(result(board, action))
             revert_action(board, action)
 
             # check if utility is -1, then return the action
@@ -162,8 +171,6 @@ def minimax(board):
                 v = min_val
                 best_action = action
 
-
-
     return best_action
 
 def max_value(board):
@@ -174,11 +181,11 @@ def max_value(board):
     #return the max value of the board
     if terminal(board):
         return utility(board)
-    v = -math.inf
+
     for action in actions(board):
-        v = max(v, min_value(result(board, action)))
+        new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
-    return v
+        return utility(new_board) + min_value(result(new_board, action))
 
 def min_value(board):
     """
@@ -188,8 +195,8 @@ def min_value(board):
     #return the min value of the board
     if terminal(board):
         return utility(board)
-    v = math.inf
+
     for action in actions(board):
-        v = min(v, max_value(result(board, action)))
+        new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
-    return v
+        return utility(new_board) + max_value(result(new_board, action))
