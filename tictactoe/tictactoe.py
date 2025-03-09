@@ -182,10 +182,22 @@ def max_value(board):
     if terminal(board):
         return utility(board)
 
+    v = -math.inf
+    best_action = None
     for action in actions(board):
         new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
-        return utility(new_board) + min_value(result(new_board, action))
+
+        # check if utility is 1, then return the action
+        if utility(new_board) == 1:
+            return utility(new_board)
+        else:
+            max_val = utility(new_board)
+            if max_val > v:
+                v = max_val
+                best_action = action
+
+    return utility(result(board, best_action)) + min_value(result(board, best_action))
 
 def min_value(board):
     """
@@ -196,7 +208,19 @@ def min_value(board):
     if terminal(board):
         return utility(board)
 
+    v = math.inf
+    best_action = None
     for action in actions(board):
         new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
-        return utility(new_board) + max_value(result(new_board, action))
+
+        # check if utility is -1, then return the action
+        if utility(new_board) == -1:
+            return utility(new_board)
+        else:
+            min_val = utility(new_board)
+            if min_val < v:
+                v = min_val
+                best_action = action
+
+    return utility(result(board, best_action)) + max_value(result(board, best_action))
