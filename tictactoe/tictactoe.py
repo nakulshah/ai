@@ -47,11 +47,11 @@ def actions(board):
     """
     # print("actions")
     # find all the empty cells on the board, these are the available actions
-    empty_cells = []
+    empty_cells = set()
     for i in range(3):
         for j in range(3):
             if board[i][j] == EMPTY:
-                empty_cells.append((i, j))
+                empty_cells.add((i, j))
     return empty_cells
 
 
@@ -60,6 +60,14 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     # print("result")
+    # check for a negative out-of-bounds move, and if so, then throw an exception
+    if action[0] < 0 or action[0] > 2 or action[1] < 0 or action[1] > 2:
+        raise Exception("Invalid move - out of bounds")
+
+    # check if the cell is already filled, and if so, then throw an exception
+    if board[action[0]][action[1]] is not EMPTY:
+        raise Exception("Invalid move - cell already filled")
+
     # mark the action on the board
     board[action[0]][action[1]] = player(board)
     return board
@@ -140,36 +148,38 @@ def minimax(board):
     print("minimax")
     best_action = None
     #return the best action for the current player using minimax algorithm
-    if player(board) == X:
-        v = -math.inf
-        for action in actions(board):
-            # create new board with the action
-            new_board = copy.deepcopy(result(board, action))
-            revert_action(board, action)
 
-            # check if utility is 1, then return the action
-            if utility(new_board) == 1:
-                return action
+    if not terminal(board):
+        if player(board) == X:
+            v = -math.inf
+            for action in actions(board):
+                # create new board with the action
+                new_board = copy.deepcopy(result(board, action))
+                revert_action(board, action)
 
-            max_val = min_value(new_board)
-            if max_val > v:
-                v = max_val
-                best_action = action
-    else:
-        v = math.inf
-        for action in actions(board):
-            #create new board with the action
-            new_board = copy.deepcopy(result(board, action))
-            revert_action(board, action)
+                # check if utility is 1, then return the action
+                if utility(new_board) == 1:
+                    return action
 
-            # check if utility is -1, then return the action
-            if utility(new_board) == -1:
-                return action
+                max_val = min_value(new_board)
+                if max_val > v:
+                    v = max_val
+                    best_action = action
+        else:
+            v = math.inf
+            for action in actions(board):
+                #create new board with the action
+                new_board = copy.deepcopy(result(board, action))
+                revert_action(board, action)
 
-            min_val = max_value(new_board)
-            if min_val < v:
-                v = min_val
-                best_action = action
+                # check if utility is -1, then return the action
+                if utility(new_board) == -1:
+                    return action
+
+                min_val = max_value(new_board)
+                if min_val < v:
+                    v = min_val
+                    best_action = action
 
     return best_action
 
