@@ -163,8 +163,7 @@ def minimax(board):
 
                 max_val = min_value(new_board)
                 if max_val > v:
-                    v = max_val
-                    best_action = action
+                    v, best_action = max_val, action
         else:
             v = math.inf
             for action in actions(board):
@@ -178,8 +177,7 @@ def minimax(board):
 
                 min_val = max_value(new_board)
                 if min_val < v:
-                    v = min_val
-                    best_action = action
+                    v, best_action = min_val, action
 
     return best_action
 
@@ -197,13 +195,11 @@ def max_value(board):
         new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
 
-        # check if utility is 1, then return the action
-        if utility(new_board) == 1:
-            return utility(new_board)
-        else:
-            max_val = utility(new_board) + min_value(new_board)
-            if max_val > v:
-                v = max_val
+        max_val = utility(new_board)
+        if max_val == 1:  # check if utility is 1, then return the action
+            return max_val
+
+        v = max(v, max_val + min_value(new_board))
 
     return v
 
@@ -217,18 +213,14 @@ def min_value(board):
         return utility(board)
 
     v = math.inf
-    best_action = None
     for action in actions(board):
         new_board = copy.deepcopy(result(board, action))
         revert_action(board, action)
 
-        # check if utility is -1, then return the action
-        if utility(new_board) == -1:
-            return utility(new_board)
-        else:
-            min_val = utility(new_board) + max_value(new_board)
-            if min_val < v:
-                v = min_val
-                best_action = action
+        min_val = utility(new_board)
+        if min_val == -1:  # check if utility is -1, then return the action
+            return min_val
+
+        v = min(v, min_val + max_value(new_board))
 
     return v
