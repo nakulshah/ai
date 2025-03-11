@@ -2,6 +2,8 @@ from logic import *
 
 AKnight = Symbol("A is a Knight")
 AKnave = Symbol("A is a Knave")
+ATrue = Symbol("A is telling the truth")
+AFalse = Symbol("A is lying")
 
 BKnight = Symbol("B is a Knight")
 BKnave = Symbol("B is a Knave")
@@ -12,7 +14,7 @@ CKnave = Symbol("C is a Knave")
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
-    # TODO
+    And(AKnave), And(AKnight)
 )
 
 # Puzzle 1
@@ -47,6 +49,11 @@ def main():
         ("Puzzle 2", knowledge2),
         ("Puzzle 3", knowledge3)
     ]
+
+    knowledge0.add(Not(And(AKnight, AKnave)))
+    knowledge0.add(And(AKnight, ATrue))
+    knowledge0.add(And(AKnave, AFalse))
+
     for puzzle, knowledge in puzzles:
         print(puzzle)
         if len(knowledge.conjuncts) == 0:
