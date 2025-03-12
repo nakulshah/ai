@@ -3,7 +3,6 @@ from logic import *
 AKnight = Symbol("A is a Knight")
 AKnave = Symbol("A is a Knave")
 ATrue = Symbol("A is telling the truth")
-AFalse = Symbol("A is lying")
 
 BKnight = Symbol("B is a Knight")
 BKnave = Symbol("B is a Knave")
@@ -14,7 +13,10 @@ CKnave = Symbol("C is a Knave")
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
-    And(AKnave), And(AKnight)
+    Or(And(AKnight, Not(AKnave)), And(AKnave, Not(AKnight))),
+    Biconditional(AKnight, ATrue),
+    Biconditional(AKnave, Not(ATrue)),
+    Not(ATrue)
 )
 
 # Puzzle 1
@@ -40,9 +42,19 @@ knowledge3 = And(
     # TODO
 )
 
+P = Symbol("It is a Tuesday.")
+Q = Symbol("It is raining.")
+R = Symbol("Harry will go for a run.")
+
+knowledgeTest = And(
+    Implication((And(P, Not(Q))), R),
+    And(P),
+    And(Not(Q))
+)
+
 
 def main():
-    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]
+    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave, ATrue]
     puzzles = [
         ("Puzzle 0", knowledge0),
         ("Puzzle 1", knowledge1),
@@ -50,9 +62,10 @@ def main():
         ("Puzzle 3", knowledge3)
     ]
 
-    knowledge0.add(Not(And(AKnight, AKnave)))
-    knowledge0.add(And(AKnight, ATrue))
-    knowledge0.add(And(AKnave, AFalse))
+    # knowledge0.add(Not(And(AKnight, AKnave)))
+    # knowledge0.add(And(AKnight, ATrue))
+    # knowledge0.add(And(AKnave, AFalse))
+
 
     for puzzle, knowledge in puzzles:
         print(puzzle)
@@ -60,9 +73,11 @@ def main():
             print("    Not yet implemented.")
         else:
             for symbol in symbols:
+                # print(symbol.name + " is " + str(model_check(knowledge, symbol)))
                 if model_check(knowledge, symbol):
-                    print(f"    {symbol}")
+                    print(f"    {symbol} is true")
 
 
+    print(R.name + " is " + str(model_check(knowledgeTest, R)))
 if __name__ == "__main__":
     main()
