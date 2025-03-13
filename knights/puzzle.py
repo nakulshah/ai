@@ -13,10 +13,10 @@ CKnave = Symbol("C is a Knave")
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
-    Or(And(AKnight, Not(AKnave)), And(AKnave, Not(AKnight))),
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
     Biconditional(AKnight, ATrue),
     Biconditional(AKnave, Not(ATrue)),
-    Not(ATrue)
 )
 
 # Puzzle 1
@@ -54,7 +54,7 @@ knowledgeTest = And(
 
 
 def main():
-    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave, ATrue]
+    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]
     puzzles = [
         ("Puzzle 0", knowledge0),
         ("Puzzle 1", knowledge1),
@@ -62,10 +62,10 @@ def main():
         ("Puzzle 3", knowledge3)
     ]
 
-    # knowledge0.add(Not(And(AKnight, AKnave)))
-    # knowledge0.add(And(AKnight, ATrue))
-    # knowledge0.add(And(AKnave, AFalse))
-
+    if model_check(knowledge0, And(AKnight, AKnave)):
+        knowledge0.add(ATrue)
+    else:
+        knowledge0.add(Not(ATrue))
 
     for puzzle, knowledge in puzzles:
         print(puzzle)
