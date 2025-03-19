@@ -11,16 +11,6 @@ BTrue = Symbol("B is telling the truth")
 CKnight = Symbol("C is a Knight")
 CKnave = Symbol("C is a Knave")
 
-# general knowledge applied to every KB
-general_knowledge = And(
-    Or(AKnight, AKnave),
-    Not(And(AKnight, AKnave)),
-    Or(BKnight, BKnave),
-    Not(And(BKnight, BKnave)),
-    Or(CKnight, CKnave),
-    Not(And(CKnight, CKnave))
-)
-
 # # Puzzle 0
 # # A says "I am both a knight and a knave."
 # knowledge0 = And(
@@ -35,39 +25,22 @@ knowledge0 = And(
     Or(AKnight, AKnave),
     Not(And(AKnight, AKnave)),
     Implication(AKnight, And(AKnight, AKnave)),
-    Implication(AKnight, Not(And(AKnight, AKnave))),
+    Implication(AKnave, Not(And(AKnight, AKnave))),
 )
-
-#
-# if model_check(knowledge0, And(AKnight, AKnave)):
-#     knowledge0.add(ATrue)
-# else:
-#     knowledge0.add(Not(ATrue))
 
 # Puzzle 1
 # A says "We are both knaves."
 # B says nothing.
 knowledge1 = And(
-    # Or(AKnight, AKnave),
-    # Not(And(AKnight, AKnave)),
-    # Biconditional(AKnight, ATrue),
-    # Biconditional(AKnave, Not(ATrue)),
-    #
-    # Or(BKnight, BKnave),
-    # Not(And(BKnight, BKnave)),
-    # Biconditional(BKnight, BTrue),
-    # Biconditional(BKnave, Not(BTrue)),
-)
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
 
-# if model_check(knowledge1, And(AKnave, BKnave)):
-#     knowledge1.add(ATrue)
-# else:
-#     knowledge1.add(Not(ATrue))
-#
-# if model_check(knowledge1, AKnight):
-#     knowledge1.add(BKnave)
-# else:
-#     knowledge1.add(BKnight)
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+
+    Implication(AKnight, And(AKnave, BKnave)),
+    Implication(AKnave, Not(And(AKnave, BKnave))),
+)
 
 # Puzzle 2
 # A says "We are the same kind."
