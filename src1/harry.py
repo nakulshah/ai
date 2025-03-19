@@ -11,4 +11,6 @@ knowledge = And(
     dumbledore
 )
 
-print(model_check(knowledge, rain))
+print(rain.name + " is " + str(model_check(knowledge, rain)))
+print(hagrid.name + " is " + str(model_check(knowledge, hagrid)))
+print(dumbledore.name + " is " + str(model_check(knowledge, dumbledore)))

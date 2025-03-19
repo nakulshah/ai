@@ -6,25 +6,68 @@ ATrue = Symbol("A is telling the truth")
 
 BKnight = Symbol("B is a Knight")
 BKnave = Symbol("B is a Knave")
+BTrue = Symbol("B is telling the truth")
 
 CKnight = Symbol("C is a Knight")
 CKnave = Symbol("C is a Knave")
+
+# general knowledge applied to every KB
+general_knowledge = And(
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    Or(CKnight, CKnave),
+    Not(And(CKnight, CKnave))
+)
+
+# # Puzzle 0
+# # A says "I am both a knight and a knave."
+# knowledge0 = And(
+#     general_knowledge,
+#     Implication(AKnight, And(AKnight, AKnave)),
+#     Implication(AKnave, Not(And(AKnight, AKnave)))
+# )
 
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
     Or(AKnight, AKnave),
     Not(And(AKnight, AKnave)),
-    Biconditional(AKnight, ATrue),
-    Biconditional(AKnave, Not(ATrue)),
+    Implication(AKnight, And(AKnight, AKnave)),
+    Implication(AKnight, Not(And(AKnight, AKnave))),
 )
+
+#
+# if model_check(knowledge0, And(AKnight, AKnave)):
+#     knowledge0.add(ATrue)
+# else:
+#     knowledge0.add(Not(ATrue))
 
 # Puzzle 1
 # A says "We are both knaves."
 # B says nothing.
 knowledge1 = And(
-    # TODO
+    # Or(AKnight, AKnave),
+    # Not(And(AKnight, AKnave)),
+    # Biconditional(AKnight, ATrue),
+    # Biconditional(AKnave, Not(ATrue)),
+    #
+    # Or(BKnight, BKnave),
+    # Not(And(BKnight, BKnave)),
+    # Biconditional(BKnight, BTrue),
+    # Biconditional(BKnave, Not(BTrue)),
 )
+
+# if model_check(knowledge1, And(AKnave, BKnave)):
+#     knowledge1.add(ATrue)
+# else:
+#     knowledge1.add(Not(ATrue))
+#
+# if model_check(knowledge1, AKnight):
+#     knowledge1.add(BKnave)
+# else:
+#     knowledge1.add(BKnight)
 
 # Puzzle 2
 # A says "We are the same kind."
@@ -62,22 +105,16 @@ def main():
         ("Puzzle 3", knowledge3)
     ]
 
-    if model_check(knowledge0, And(AKnight, AKnave)):
-        knowledge0.add(ATrue)
-    else:
-        knowledge0.add(Not(ATrue))
-
     for puzzle, knowledge in puzzles:
         print(puzzle)
         if len(knowledge.conjuncts) == 0:
             print("    Not yet implemented.")
         else:
             for symbol in symbols:
-                # print(symbol.name + " is " + str(model_check(knowledge, symbol)))
                 if model_check(knowledge, symbol):
                     print(f"    {symbol} is true")
 
 
-    print(R.name + " is " + str(model_check(knowledgeTest, R)))
+    # print(R.name + " is " + str(model_check(knowledgeTest, R)))
 if __name__ == "__main__":
     main()
