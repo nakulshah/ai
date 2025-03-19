@@ -2,22 +2,12 @@ from logic import *
 
 AKnight = Symbol("A is a Knight")
 AKnave = Symbol("A is a Knave")
-ATrue = Symbol("A is telling the truth")
 
 BKnight = Symbol("B is a Knight")
 BKnave = Symbol("B is a Knave")
-BTrue = Symbol("B is telling the truth")
 
 CKnight = Symbol("C is a Knight")
 CKnave = Symbol("C is a Knave")
-
-# # Puzzle 0
-# # A says "I am both a knight and a knave."
-# knowledge0 = And(
-#     general_knowledge,
-#     Implication(AKnight, And(AKnight, AKnave)),
-#     Implication(AKnave, Not(And(AKnight, AKnave)))
-# )
 
 # Puzzle 0
 # A says "I am both a knight and a knave."
@@ -46,7 +36,17 @@ knowledge1 = And(
 # A says "We are the same kind."
 # B says "We are of different kinds."
 knowledge2 = And(
-    # TODO
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+
+    Implication(AKnight, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
+    Implication(AKnave, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
+
+    Implication(BKnave, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
+    Implication(BKnight, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
 )
 
 # Puzzle 3
@@ -55,7 +55,28 @@ knowledge2 = And(
 # B says "C is a knave."
 # C says "A is a knight."
 knowledge3 = And(
-    # TODO
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+
+    Or(CKnight, CKnave),
+    Not(And(CKnight, CKnave)),
+
+    Implication(AKnight, Or(AKnight, AKnave)),
+    Implication(AKnight, Not(And(AKnight, AKnave))),
+    Implication(AKnave, Not(Or(AKnight, AKnave))),
+    Implication(AKnave, And(AKnight, AKnave)),
+
+    Implication(BKnight, And(AKnight, AKnave)),
+    Implication(BKnave, Not(And(AKnight, AKnave))),
+
+    Implication(BKnight, CKnave),
+    Implication(BKnave, Not(CKnave)),
+
+    Implication(CKnight, AKnight),
+    Implication(CKnave, Not(AKnight)),
 )
 
 P = Symbol("It is a Tuesday.")
